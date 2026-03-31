@@ -76,7 +76,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # Sign the resulting Docker image digest except on PRs.
+      # Sign the resulting Docker image digest except on PRs
       - name: Sign the published Docker image
         if: ${{ github.event_name != 'pull_request' }}
         env:
