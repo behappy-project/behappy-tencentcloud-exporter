@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -157,7 +156,7 @@ func NewConfig() *TencentConfig {
 
 func (c *TencentConfig) LoadFile(filename string) error {
 	c.Filename = filename
-	content, err := ioutil.ReadFile(c.Filename)
+	content, err := os.ReadFile(c.Filename)
 	if err != nil {
 		return err
 	}

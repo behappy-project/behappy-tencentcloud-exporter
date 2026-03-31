@@ -1,0 +1,14 @@
+apiVersion: v2
+name: tencentcloud-exporter
+description: Prometheus exporter for Tencent Cloud monitoring metrics
+type: application
+version: 0.1.0
+appVersion: "latest"
+keywords:
+  - tencentcloud
+  - prometheus
+  - exporter
+  - monitoring
+home: https://github.com/behappy-project/behappy-tencentcloud-exporter
+sources:
+  - https://github.com/behappy-project/behappy-tencentcloud-exporter

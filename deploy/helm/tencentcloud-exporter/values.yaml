@@ -1,0 +1,80 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/behappy-project/behappy-tencentcloud-exporter
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9123"
+  prometheus.io/path: "/metrics"
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 9123
+
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "256Mi"
+    cpu: "200m"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+serviceMonitor:
+  enabled: false
+  # Namespace where the ServiceMonitor is created; defaults to release namespace
+  namespace: ""
+  interval: "60s"
+  scrapeTimeout: "30s"
+  # Additional labels to add to the ServiceMonitor (e.g. to match a Prometheus operator selector)
+  labels: {}
+
+config:
+  credential:
+    # Tencent Cloud API access key (SecretId)
+    accessKey: ""
+    # Tencent Cloud API secret key (SecretKey)
+    secretKey: ""
+    region: "ap-guangzhou"
+    # Name of an existing Secret containing keys `access-key` and `secret-key`.
+    # When set, accessKey and secretKey above are ignored and no new Secret is created.
+    existingSecret: ""
+  # Cloud Monitor API rate limit (max 20/s, 1200/min)
+  rateLimit: 15
+  # List of product configurations. Each entry maps directly to a products[] item in qcloud.yml.
+  # Example:
+  # products:
+  #   - namespace: QCE/CVM
+  #     all_metrics: true
+  #     all_instances: true
+  products: []
+
+# Extra command-line arguments passed to qcloud_exporter
+extraArgs: []
+
+# Extra environment variables injected into the container
+env: []

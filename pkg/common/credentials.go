@@ -3,7 +3,7 @@ package common
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"sync"
 	"time"
@@ -15,6 +15,7 @@ type CredentialIface interface {
 	GetSecretId() string
 	GetToken() string
 	GetSecretKey() string
+	GetCredential() (string, string, string)
 	Refresh() error
 	GetRole() string
 }
@@ -76,7 +77,7 @@ func (c *Credential) refresh() error {
 
 	defer func() { _ = res.Body.Close() }()
 
-	data, err := ioutil.ReadAll(res.Body)
+	data, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
@@ -133,6 +134,12 @@ func (c *Credential) GetToken() string {
 
 func (c *Credential) GetRole() string {
 	return c.Role
+}
+
+func (c *Credential) GetCredential() (string, string, string) {
+	c.rwLocker.RLock()
+	defer c.rwLocker.RUnlock()
+	return c.SecretId, c.SecretKey, c.Token
 }
 
 func (c *Credential) RoundTrip(req *http.Request) (*http.Response, error) {

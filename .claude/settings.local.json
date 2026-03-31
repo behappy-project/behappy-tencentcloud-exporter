@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(head -30 /Users/zi.b.wang/Projects/go_project/behappy-tencentcloud-exporter/pkg/client/*.go)",
+      "Bash(wc -l /Users/zi.b.wang/Projects/go_project/behappy-tencentcloud-exporter/pkg/collector/*.go)",
+      "WebSearch",
+      "Bash(git -C /Users/zi.b.wang/Projects/go_project/behappy-tencentcloud-exporter log --oneline)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(go version:*)",
+      "Bash(go get:*)",
+      "Bash(go mod:*)",
+      "Bash(go build:*)",
+      "Bash(go vet:*)",
+      "Bash(go install:*)",
+      "Bash(go generate:*)",
+      "Bash(go test:*)",
+      "Bash(git:*)",
+      "Bash(helm lint:*)"
+    ]
+  }
+}

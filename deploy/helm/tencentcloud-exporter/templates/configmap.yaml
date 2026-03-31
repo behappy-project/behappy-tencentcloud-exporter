@@ -1,0 +1,30 @@
+{{- define "tencentcloud-exporter.qcloudYml" -}}
+credential:
+{{- if .Values.config.credential.existingSecret }}
+  access_key: "${TENCENTCLOUD_SECRET_ID}"
+  secret_key: "${TENCENTCLOUD_SECRET_KEY}"
+{{- else }}
+  access_key: {{ .Values.config.credential.accessKey | quote }}
+  secret_key: {{ .Values.config.credential.secretKey | quote }}
+{{- end }}
+  region: {{ .Values.config.credential.region | quote }}
+
+rate_limit: {{ .Values.config.rateLimit }}
+
+products:
+{{- if .Values.config.products }}
+{{ toYaml .Values.config.products | indent 2 }}
+{{- else }}
+  []
+{{- end }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "tencentcloud-exporter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "tencentcloud-exporter.labels" . | nindent 4 }}
+data:
+  qcloud.yml: |
+{{ include "tencentcloud-exporter.qcloudYml" . | indent 4 }}

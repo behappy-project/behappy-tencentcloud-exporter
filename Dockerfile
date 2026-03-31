@@ -1,17 +1,13 @@
-FROM golang:alpine as build-env
+FROM golang:1.21-alpine AS build-env
 
-# Copy source + vendor
-COPY . /go/src/github.com/tencentyun/qcloud-exporter
-WORKDIR /go/src/github.com/tencentyun/qcloud-exporter
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
 
-# Build
-ENV GOPATH=/go
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -v -a -ldflags "-s -w" -o /go/bin/qcloud_exporter ./cmd/qcloud-exporter/
+RUN CGO_ENABLED=0 GOOS=linux go build -v -a -ldflags "-s -w" -o /go/bin/qcloud_exporter ./cmd/qcloud-exporter/
 
-FROM alpine
+FROM alpine:3.19
 COPY --from=build-env /go/bin/qcloud_exporter /usr/bin/qcloud_exporter
-RUN apk update
-#RUN apk add git
-RUN apk add curl
-RUN apk add tcpdump
+RUN apk add --no-cache curl tcpdump
 ENTRYPOINT ["qcloud_exporter"]

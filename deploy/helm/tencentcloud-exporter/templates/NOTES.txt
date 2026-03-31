@@ -1,0 +1,55 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Release name : {{ .Release.Name }}
+Namespace    : {{ .Release.Namespace }}
+App version  : {{ .Chart.AppVersion }}
+
+=============================================================
+  Tencent Cloud Exporter — Quick Start
+=============================================================
+
+1. Verify the pod is running:
+
+   kubectl get pods -n {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "tencentcloud-exporter.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+
+2. Access the metrics endpoint via port-forward:
+
+   kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "tencentcloud-exporter.fullname" . }} 9123:9123
+
+   Then open http://localhost:9123/metrics in your browser or run:
+
+   curl http://localhost:9123/metrics
+
+3. Service address inside the cluster:
+
+   http://{{ include "tencentcloud-exporter.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}/metrics
+
+=============================================================
+  Configuration
+=============================================================
+
+{{- if .Values.config.credential.existingSecret }}
+  Credentials are sourced from existing Secret: {{ .Values.config.credential.existingSecret }}
+    Expected keys: access-key, secret-key
+{{- else if and .Values.config.credential.accessKey .Values.config.credential.secretKey }}
+  Credentials are stored in Secret: {{ include "tencentcloud-exporter.fullname" . }}
+{{- else }}
+  WARNING: No credentials configured!
+  Set config.credential.accessKey and config.credential.secretKey, or
+  provide an existing Secret via config.credential.existingSecret.
+{{- end }}
+
+  Region     : {{ .Values.config.credential.region }}
+  Rate limit : {{ .Values.config.rateLimit }} req/s
+
+{{- if .Values.serviceMonitor.enabled }}
+
+  ServiceMonitor is ENABLED — Prometheus Operator will auto-discover this exporter.
+{{- else }}
+
+  To enable Prometheus Operator auto-discovery, set:
+    --set serviceMonitor.enabled=true
+{{- end }}
+
+For more information, visit:
+  https://github.com/behappy-project/behappy-tencentcloud-exporter
