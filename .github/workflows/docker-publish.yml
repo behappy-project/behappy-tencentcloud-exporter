@@ -54,6 +54,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
+          # 无需手动设置 GITHUB_TOKEN，GitHub 会自动提供该密钥
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Extract metadata (tags, labels) for Docker
