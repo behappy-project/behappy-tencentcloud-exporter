@@ -1,0 +1,37 @@
+apiVersion: v1
+entries:
+  tencentcloud-exporter:
+  - annotations:
+      artifacthub.io/category: monitoring-logging
+      artifacthub.io/images: |
+        - name: tencentcloud-exporter
+          image: ghcr.io/behappy-project/behappy-tencentcloud-exporter
+      artifacthub.io/license: MIT
+      artifacthub.io/links: |
+        - name: source
+          url: https://github.com/behappy-project/behappy-tencentcloud-exporter
+        - name: support
+          url: https://github.com/behappy-project/behappy-tencentcloud-exporter/issues
+    apiVersion: v2
+    appVersion: latest
+    created: "2026-04-01T07:42:15.024227668Z"
+    description: Prometheus exporter for Tencent Cloud monitoring metrics
+    digest: ec477bcf5786d39bae363bdab28f1a3ef6e13ef646576bf310bb12d738f0da1a
+    home: https://github.com/behappy-project/behappy-tencentcloud-exporter
+    keywords:
+    - tencentcloud
+    - prometheus
+    - exporter
+    - monitoring
+    - tencent-cloud
+    maintainers:
+    - name: behappy-project
+      url: https://github.com/behappy-project
+    name: tencentcloud-exporter
+    sources:
+    - https://github.com/behappy-project/behappy-tencentcloud-exporter
+    type: application
+    urls:
+    - https://github.com/behappy-project/behappy-tencentcloud-exporter/releases/download/tencentcloud-exporter-0.1.0/tencentcloud-exporter-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-04-01T07:42:15.024233439Z"
