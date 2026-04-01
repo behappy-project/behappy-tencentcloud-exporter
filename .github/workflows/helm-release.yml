@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      packages: write
+      pages: write
 
     steps:
       - name: Checkout
@@ -65,4 +67,3 @@ jobs:
             git push origin gh-pages
           fi
           git checkout master
-
