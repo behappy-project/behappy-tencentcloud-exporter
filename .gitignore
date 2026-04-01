@@ -5,3 +5,5 @@ qcloud.yml
 .DS_Store
 *mock.go
 /bin
+.claude/
+.omc/

@@ -1,0 +1,7 @@
+# ArtifactHub repository metadata
+# After adding this repo on ArtifactHub, get the repositoryID from
+# Settings page and fill it in below to enable the Verified Publisher badge.
+# repositoryID: <your-uuid-from-artifacthub>
+owners:
+  - name: behappy-project
+    email: behappy-project@users.noreply.github.com

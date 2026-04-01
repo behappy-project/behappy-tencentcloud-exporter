@@ -99,22 +99,25 @@ docker run -d \
 ### 方式三：Kubernetes (Helm)
 
 ```shell
-# 复制并修改配置文件
-cp configs/qcloud-cvm-product.yml myconfig.yml
-# 编辑 myconfig.yml，填写密钥和所需产品
+# 添加 Helm 仓库
+helm repo add tencentcloud-exporter https://behappy-project.github.io/behappy-tencentcloud-exporter
+helm repo update
 
 # 使用参数安装
-helm install tencentcloud-exporter deploy/helm/tencentcloud-exporter \
+helm install tencentcloud-exporter tencentcloud-exporter/tencentcloud-exporter \
   --set config.credential.accessKey=YOUR_SECRET_ID \
   --set config.credential.secretKey=YOUR_SECRET_KEY \
   --set config.credential.region=ap-guangzhou \
   --namespace monitoring --create-namespace
 
 # 或使用 values 文件安装
-helm install tencentcloud-exporter deploy/helm/tencentcloud-exporter \
+helm install tencentcloud-exporter tencentcloud-exporter/tencentcloud-exporter \
   -f my-values.yaml \
   --namespace monitoring --create-namespace
 ```
+
+> 也可通过 [ArtifactHub](https://artifacthub.io/) 搜索 `tencentcloud-exporter` 查看 Chart 详情。
+> 本地开发时可直接使用源码中的 Chart：`helm install tencentcloud-exporter deploy/helm/tencentcloud-exporter`
 
 Helm values 文件示例：
 

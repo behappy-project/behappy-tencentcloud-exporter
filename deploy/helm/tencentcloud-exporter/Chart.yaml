@@ -9,6 +9,21 @@ keywords:
   - prometheus
   - exporter
   - monitoring
+  - tencent-cloud
 home: https://github.com/behappy-project/behappy-tencentcloud-exporter
 sources:
   - https://github.com/behappy-project/behappy-tencentcloud-exporter
+maintainers:
+  - name: behappy-project
+    url: https://github.com/behappy-project
+annotations:
+  artifacthub.io/category: monitoring-logging
+  artifacthub.io/license: MIT
+  artifacthub.io/links: |
+    - name: source
+      url: https://github.com/behappy-project/behappy-tencentcloud-exporter
+    - name: support
+      url: https://github.com/behappy-project/behappy-tencentcloud-exporter/issues
+  artifacthub.io/images: |
+    - name: tencentcloud-exporter
+      image: ghcr.io/behappy-project/behappy-tencentcloud-exporter

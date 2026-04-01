@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"which helm 2>&1 && helm lint /Users/zi.b.wang/Projects/go_project/behappy-tencentcloud-exporter/deploy/helm/tencentcloud-exporter/ 2>&1\",\"description\":\"Lint Helm chart\"}",
-  "error": "Exit code 1\nhelm not found",
-  "timestamp": "2026-03-31T08:00:41.212Z",
-  "retry_count": 1
-}
