@@ -77,4 +77,14 @@ config:
 extraArgs: []
 
 # Extra environment variables injected into the container
+# Example: configure Tencent Cloud credentials and region via env vars
+# env:
+#   - name: TENCENTCLOUD_SECRET_ID
+#     value: "your-secret-id"
+#   - name: TENCENTCLOUD_SECRET_KEY
+#     value: "your-secret-key"
+#   - name: TENCENTCLOUD_REGION
+#     value: "ap-guangzhou"
+#   - name: TENCENTCLOUD_SERVICE_ROLE
+#     value: "your-service-role"
 env: []

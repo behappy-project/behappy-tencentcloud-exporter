@@ -62,20 +62,18 @@ spec:
               containerPort: 9123
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /metrics
+            tcpSocket:
               port: metrics
             initialDelaySeconds: 30
             periodSeconds: 30
-            timeoutSeconds: 10
+            timeoutSeconds: 5
             failureThreshold: 3
           readinessProbe:
-            httpGet:
-              path: /metrics
+            tcpSocket:
               port: metrics
             initialDelaySeconds: 10
             periodSeconds: 15
-            timeoutSeconds: 10
+            timeoutSeconds: 5
             failureThreshold: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
