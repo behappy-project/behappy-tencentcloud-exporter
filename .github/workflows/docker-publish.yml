@@ -132,8 +132,10 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
-          git fetch origin gh-pages:gh-pages 2>/dev/null || true
           AHUB_CONTENT=$(git show HEAD:artifacthub-repo.yml 2>/dev/null) || exit 0
+          git checkout -- . 2>/dev/null || true
+          git clean -fd 2>/dev/null || true
+          git fetch origin gh-pages:gh-pages 2>/dev/null || true
           git checkout gh-pages
           echo "$AHUB_CONTENT" > artifacthub-repo.yml
           git add artifacthub-repo.yml
