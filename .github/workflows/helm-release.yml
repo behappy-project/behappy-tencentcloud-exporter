@@ -1,0 +1,76 @@
+name: Release Helm Charts
+
+on:
+  push:
+    branches:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Extract version from branch name
+        id: version
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          VERSION="${BRANCH_NAME#v}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Extracted version: ${VERSION}"
+
+      - name: Update Chart.yaml version and appVersion
+        run: |
+          sed -i "s/^version:.*/version: ${{ steps.version.outputs.version }}/" deploy/helm/tencentcloud-exporter/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"${{ steps.version.outputs.version }}\"/" deploy/helm/tencentcloud-exporter/Chart.yaml
+          echo "Updated Chart.yaml:"
+          cat deploy/helm/tencentcloud-exporter/Chart.yaml
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Ensure gh-pages branch exists
+        run: |
+          if ! git ls-remote --exit-code --heads origin gh-pages > /dev/null 2>&1; then
+            echo "Creating gh-pages branch..."
+            git checkout --orphan gh-pages
+            git rm -rf .
+            git commit --allow-empty -m "chore: initialize gh-pages for Helm chart repo"
+            git push origin gh-pages
+            git checkout -
+          fi
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          charts_dir: deploy/helm
+          skip_existing: true
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Copy ArtifactHub metadata to gh-pages
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          AHUB_CONTENT=$(git show HEAD:artifacthub-repo.yml 2>/dev/null) || exit 0
+          git checkout -- . 2>/dev/null || true
+          git clean -fd 2>/dev/null || true
+          git fetch origin gh-pages:gh-pages 2>/dev/null || true
+          git checkout gh-pages
+          echo "$AHUB_CONTENT" > artifacthub-repo.yml
+          git add artifacthub-repo.yml
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update artifacthub-repo.yml"
+            git push origin gh-pages
+          fi
