@@ -2,7 +2,6 @@ name: Docker & Helm
 
 on:
   push:
-    branches: [ master ]
     tags: [ 'v*.*.*' ]
   pull_request:
     branches: [ master ]
@@ -54,10 +53,9 @@ jobs:
             ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}
             ${{ env.DOCKERHUB_IMAGE }}
           tags: |
-            type=ref,event=branch
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
 
       - name: Build and push Docker image
         id: build-and-push
@@ -75,7 +73,8 @@ jobs:
         run: cosign sign --yes ${{ env.GHCR_REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-and-push.outputs.digest }}
 
   helm-release:
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push'
+    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -93,6 +92,20 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/v}"
+          echo "version=${TAG_NAME}" >> "$GITHUB_OUTPUT"
+          echo "Extracted version: ${TAG_NAME}"
+
+      - name: Update Chart.yaml version and appVersion from tag
+        run: |
+          sed -i "s/^version:.*/version: ${{ steps.version.outputs.version }}/" deploy/helm/tencentcloud-exporter/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"${{ steps.version.outputs.version }}\"/" deploy/helm/tencentcloud-exporter/Chart.yaml
+          echo "Updated Chart.yaml:"
+          cat deploy/helm/tencentcloud-exporter/Chart.yaml
+
       - name: Install Helm
         uses: azure/setup-helm@v4
 
@@ -104,7 +117,7 @@ jobs:
             git rm -rf .
             git commit --allow-empty -m "chore: initialize gh-pages for Helm chart repo"
             git push origin gh-pages
-            git checkout master
+            git checkout -
           fi
 
       - name: Run chart-releaser
@@ -120,7 +133,7 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
           git fetch origin gh-pages:gh-pages 2>/dev/null || true
-          AHUB_CONTENT=$(git show origin/master:artifacthub-repo.yml 2>/dev/null) || exit 0
+          AHUB_CONTENT=$(git show HEAD:artifacthub-repo.yml 2>/dev/null) || exit 0
           git checkout gh-pages
           echo "$AHUB_CONTENT" > artifacthub-repo.yml
           git add artifacthub-repo.yml
@@ -128,4 +141,3 @@ jobs:
             git commit -m "chore: update artifacthub-repo.yml"
             git push origin gh-pages
           fi
-          git checkout master
